@@ -175,7 +175,7 @@ foreach x ($maybeupdatedfiles)
   cmp -s ../$x $x || set updatedfiles = ($updatedfiles $x)
 end
 
-rm LOG
+rm -f LOG
 cat ../LOG > LOG
 echo "" >> LOG
 echo "$R changes:" >> LOG
