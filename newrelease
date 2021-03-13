@@ -92,7 +92,7 @@ sed -e "s/csv[0-9]\.[0-9]\(\.[0-9]\)*/csv$R/" ../makefiles/Mf-install.in > makef
 sed -e "s/csug[0-9]\.[0-9]/csug$MR.$mR/" -e "s/csug[0-9]_[0-9]/csug$MR""_$mR/" ../makefiles/Makefile-csug.in > makefiles/Makefile-csug.in
 set maybeupdatedfiles = ($maybeupdatedfiles makefiles/Mf-install.in makefiles/Makefile-csug.in)
 
-rm scheme.1.in
+rm -f scheme.1.in
 sed -e "s/Chez Scheme Version [0-9]\.[0-9]\(\.[0-9]\)* .* [0-9][0-9]*/Chez Scheme Version $R `date +'%B %Y'`/" \
     -e "s/Copyright .* Cisco Systems, Inc./Copyright `date +%Y` Cisco Systems, Inc./" \
   ../scheme.1.in > scheme.1.in
