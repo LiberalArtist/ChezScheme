@@ -146,7 +146,7 @@ sed -e "s/Revised\(.*\)for Chez Scheme Version [^ ]*<br>/Revised\1for Chez Schem
   ../csug/csug.stex > csug/csug.stex
 set maybeupdatedfiles = ($maybeupdatedfiles csug/copyright.stex csug/csug.stex)
 
-rm bintar/Makefile
+rm -f bintar/Makefile
 sed -e "s/^version = .*/version = $R/" \
     -e "s/csv[0-9][0-9][0-9]*/csv$ZR/g" \
   ../bintar/Makefile > bintar/Makefile
