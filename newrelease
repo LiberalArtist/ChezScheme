@@ -156,7 +156,7 @@ rm -f rpm/Makefile
 sed -e "s/^version = .*/version = $R/" ../rpm/Makefile > rpm/Makefile
 set maybeupdatedfiles = ($maybeupdatedfiles rpm/Makefile)
 
-rm pkg/Makefile
+rm -f pkg/Makefile
 sed -e "s/^version = .*/version = $R/" \
     -e "s/&copy; .* Cisco Systems/\&copy; `date +%Y` Cisco Systems/" \
      ../pkg/Makefile > pkg/Makefile
