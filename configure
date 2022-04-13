@@ -420,7 +420,7 @@ else
   if [ "${zlibDep}" != "" ] ; then
     if [ ! -f 'zlib/configure' ] ; then
       rmdir zlib > /dev/null 2>&1
-      (curl -L -o v1.2.12.tar.gz https://github.com/madler/zlib/archive/v1.2.12.tar.gz && tar -xzf v1.2.12.tar.gz && mv zlib-1.2.12 zlib && rm v1.2.12.tar.gz) || exit 1
+      (curl -L -o v1.2.12.tar.gz https://github.com/madler/zlib/archive/ec3df00.tar.gz && tar -xzf v1.2.12.tar.gz && mv zlib-ec3df00224d4b396e2ac6586ab5d25f673caa4c2 zlib && rm v1.2.12.tar.gz) || exit 1
     fi
   fi
   

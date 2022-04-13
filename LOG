@@ -2271,5 +2271,6 @@
     mats/misc.ms mats/thread-check.ss mats/thread.ms
 - update lz4 to version 1.9.3
     configure
-- update zlib to version 1.2.12, which fixes CVE-2018-25032
-    configure c/Mf-{a6le,ta6le}
+- update zlib to version 1.2.12 (which fixes CVE-2018-25032), plus further
+  not-yet-released commits that fix a bug in its configure script
+    configure
