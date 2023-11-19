@@ -233,20 +233,29 @@
     ;; in parallel to doc-project-names
     '(InstallCSUG InstallReleaseNotes))
   (define (targets-for-doc name install-dir-key)
-    (define doc-dir (at-dir ".." name)) ;; ".." goes out of the workarea
+    (define doc-dir (at-dir ".." name))
     (define mf-in (at-source "makefiles" (~a "Makefile-" name ".in")))
     (define mf-out (build-path doc-dir "Makefile"))
     (define name-sym (string->symbol name))
     (define (run-make target)
       (check-not-kernel-only)
+      (define install-dir
+        (hash-ref config install-dir-key))
+      (define other-install-dir-key
+        (car (remove install-dir-key doc-install-dir-keys)))
+      (define other-install-dir
+        (hash-ref config other-install-dir-key))
       (define (->rel-shell pth)
         (string->shell (find-relative-path doc-dir pth)))
       (shell/wait "make"
                   (~a "m=" m)
                   (~a "srcdir=" (->rel-shell (at-source name)))
-                  (~a "installdir="
-                      (->rel-shell (hash-ref config install-dir-key)))
+                  (~a "installdir=" (->rel-shell install-dir))
                   (~a "STEXLIB=" (->rel-shell stexlib))
+                  (~a other-install-dir-key "=" (->rel-shell other-install-dir))
+                  (~a "rel" other-install-dir-key "="
+                      (string->shell (find-relative-path install-dir
+                                                         other-install-dir)))
                   target
                   (hash 'dir doc-dir)))
     `([:target ,mf-out (,mf-in)
