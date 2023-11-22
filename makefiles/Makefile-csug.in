@@ -1,7 +1,7 @@
 srcdir=oops-missing-srcdir
 installdir=oops-missing-installdir
 InstallReleaseNotes=oops-missing-InstallReleaseNotes
-relInstallReleaseNotes=oops-missing-InstallReleaseNotes
+relInstallReleaseNotes=oops-missing-relInstallReleaseNotes
 m=oops-missing-m
 STEXLIB=oops-missing-stexlib
 # Zuo overrides the above variables when running `make`

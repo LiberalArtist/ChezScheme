@@ -233,12 +233,15 @@
     ;; in parallel to doc-project-names
     '(InstallCSUG InstallReleaseNotes))
   (define (targets-for-doc name install-dir-key)
-    (define doc-dir (at-dir ".." name))
+    (define doc-dir (at-dir ".." name)) ;; ".." goes out of the workarea
     (define mf-in (at-source "makefiles" (~a "Makefile-" name ".in")))
     (define mf-out (build-path doc-dir "Makefile"))
     (define name-sym (string->symbol name))
     (define (run-make target)
       (check-not-kernel-only)
+      ;; Note: build.bat on Windows does not currently configure these
+      ;; settings, so only evaluate (hash-ref config ...) when trying to
+      ;; build a target, not while merely generating the list of targets.
       (define install-dir
         (hash-ref config install-dir-key))
       (define other-install-dir-key
