@@ -457,6 +457,8 @@
 \def\categorymodule{module}
 \def\categoryftype{ftype}
 
+%%% summary of forms
+% see also summary.stex and summary.ss
 \newwrite\forms
 \openout\forms=\jobname.rfm
 % \formsummary{sort key}{type}{form}{label}
