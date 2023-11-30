@@ -27,7 +27,7 @@ bib =
 include $(STEXLIB)/Mf-stex
 
 srcs = $(x).stex releasenotes.cls releasenotes.hcls \
-  macros.stex releasenotes.css scheme.sty
+  macros.stex releasenotes.css
 
 # define or override suffixes here
 
