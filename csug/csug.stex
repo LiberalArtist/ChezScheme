@@ -17,9 +17,6 @@
 % \let\cleardoublepage=\relax\includeonly{threads}
 
 \usepackage{scheme}
-\iflatex
-\usepackage{csug}
-\fi
 
 \schemeinit
 (case-sensitive #t)

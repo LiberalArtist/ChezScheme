@@ -76,7 +76,7 @@ stexsrc = csug.stex title.stex copyright.stex contents.stex\
  compat.stex bibliography.stex summary.stex
 texsrc = ${stexsrc:%.stex=%.tex}
 
-moresrc = tspl4-prep.stex priminfo.ss docond.ss csug8.cls csug8.hcls csug810.clo csug.sty csug.bib \
+moresrc = tspl4-prep.stex priminfo.ss docond.ss csug8.cls csug8.hcls csug810.clo csug.bib \
  setup.ss summary.ss tspl.bst
 
 $(stexsrc) $(moresrc):
@@ -162,7 +162,7 @@ $(x).hprefourthrun: $(x).hthirdrun
 
 $(x).prefirstrun: $(texsrc) csug8.cls csug810.clo
 
-$(x).firstrun: csug.sty
+$(x).firstrun:
 
 tspl.aux: ${TSPLdir}/tspl.aux
 	cat ${TSPLdir}/*.aux | grep '\\newlabel' | \
