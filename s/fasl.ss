@@ -16,6 +16,8 @@
 ;; The fasl reader is "fasl.c", which includes an overview of the fasl
 ;; format.
 
+(define-who $fasl-write-gensym-hook ($make-thread-parameter (lambda (x) x)))
+
 (let ()
 (define-record-type target
   (nongenerative #{target dchg2hp5v3cck8ge283luo-1})
@@ -317,7 +319,8 @@
   (lambda (x p t a?)
     (cond
       [(gensym? x)
-       (let ((uname (gensym->unique-string x)))
+       (let* ((x (($fasl-write-gensym-hook) x))
+              (uname (gensym->unique-string x)))
          (put-u8 p (constant fasl-type-gensym))
          (wrf-string-help (symbol->string x) p)
          (wrf-string-help uname p))]
