@@ -885,7 +885,9 @@
                       (if (compile-omit-concatenate-support)
                           final**
                           ;; inserting #t after lpinfo as an end-of-header marker
-                          (cons (list `(object #t)) final**))))))))))
+                          (append (list (list `(object #t)))
+                                  final**
+                                  (list (list `(object #30rFOOT)))))))))))))
 
 (define (new-extension new-ext fn)
   (let ([old-ext (path-extension fn)])
