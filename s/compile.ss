@@ -885,12 +885,25 @@
                       (if (compile-omit-concatenate-support)
                           final**
                           ;; inserting #t after lpinfo as an end-of-header marker
-                          (append (list (list `(object #t)))
-                                  final**
-                                  (if (wrapper-procedure? ($fasl-write-gensym-hook))
-                                      (begin (display "!!! #30rFOOT !!!\n" (current-error-port))
-                                             (list (list `(object ,#30rFOOT))))
-                                      '())))))))))))
+                          (cons (list `(object #t)) final**))))
+            (when (wrapper-procedure? ($fasl-write-gensym-hook))
+              (display "!!! #30rFOOT !!!\n" (current-error-port))
+              ;; don't want to be an ENTRY
+              #;($open-bytevector-list-output-port)
+              ($fasl-write #30rFOOT p #f #f)
+              #|(let ([t ($fasl-table external?-pred)]
+                    [a? #f])
+                (c-build-fasl x t a?) ;?
+                (c-faslobj x t p a?)
+(define-who fasl-write
+    (case-lambda
+     [(x p) (fasl-write x p #f #f)]
+(define (c-faslobj x t p a?)
+  (let faslobj ([x x])
+    (record-case x
+      [(object) (x) ($fasl-out x p t a?)]
+|#)))))))
+
 
 (define (new-extension new-ext fn)
   (let ([old-ext (path-extension fn)])
