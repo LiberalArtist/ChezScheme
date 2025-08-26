@@ -866,44 +866,50 @@
             rcinfo*))
         rcinfo**)
       (let ([import-req* (vector->list (hashtable-keys import-ht))]
-            [include-req* (vector->list (hashtable-keys include-ht))])
+            [include-req* (vector->list (hashtable-keys include-ht))]
+            [emit-some-to
+             (lambda (op)
+               (lambda (final*)
+                 (for-each
+                  (lambda (x)
+                    (record-case x
+                                 [(visit-stuff) x (c-print-fasl x op (constant fasl-type-visit) external?-pred omit-rtds?)]
+                                 [(revisit-stuff) x (c-print-fasl x op (constant fasl-type-revisit) external?-pred omit-rtds?)]
+                                 [else (c-print-fasl x op (constant fasl-type-visit-revisit) external?-pred omit-rtds?)]))
+                  final*)))])
         ; the first entry is always, if needed, a recompile-info record with recompile information for the entire object file
         ($pass-time 'pfasl
           (lambda ()
             (unless (and (compile-omit-concatenate-support) (null? import-req*) (null? include-req*))
               (c-print-fasl `(object ,(make-recompile-info import-req* include-req*)) op (constant fasl-type-visit-revisit) #f #f))
-            (for-each
-              (lambda (final*)
-                (for-each
-                  (lambda (x)
-                    (record-case x
-                      [(visit-stuff) x (c-print-fasl x op (constant fasl-type-visit) external?-pred omit-rtds?)]
-                      [(revisit-stuff) x (c-print-fasl x op (constant fasl-type-revisit) external?-pred omit-rtds?)]
-                      [else (c-print-fasl x op (constant fasl-type-visit-revisit) external?-pred omit-rtds?)]))
-                  final*))
-              (append lpinfo**
-                      (if (compile-omit-concatenate-support)
-                          final**
-                          ;; inserting #t after lpinfo as an end-of-header marker
-                          (cons (list `(object #t)) final**))))
-            (when (wrapper-procedure? ($fasl-write-gensym-hook))
-              (display "!!! #30rFOOT !!!\n" (current-error-port))
-              ;; don't want to be an ENTRY
-              #;($open-bytevector-list-output-port)
-              ($fasl-write #30rFOOT p #f #f)
-              #|(let ([t ($fasl-table external?-pred)]
-                    [a? #f])
-                (c-build-fasl x t a?) ;?
-                (c-faslobj x t p a?)
-(define-who fasl-write
-    (case-lambda
-     [(x p) (fasl-write x p #f #f)]
-(define (c-faslobj x t p a?)
-  (let faslobj ([x x])
-    (record-case x
-      [(object) (x) ($fasl-out x p t a?)]
-|#)))))))
-
+            (for-each (emit-some-to op) lpinfo**)
+            (let ([emit-end-of-header-and-body
+                   ;; TODO: it would be more correct-by-construction to have end-of-header be #t XOR gensym-info
+                   (lambda (op)
+                     (for-each (emit-some-to op)
+                               (if (compile-omit-concatenate-support)
+                                   final**
+                                   ;; inserting #t after lpinfo as an end-of-header marker
+                                   (cons (list `(object #t)) final**))))])
+              (cond
+               [(or (compile-omit-concatenate-support)
+                    (not (wrapper-procedure? ($fasl-write-gensym-hook))))
+                emit-end-of-header-and-body]
+               [else
+                (display "!!! buffering for fasl gensym !!!\n" (current-error-port))
+                (let-values ([(bv* size)
+                              (let-values ([(op extractor) ($open-bytevector-list-output-port)])
+                                (emit-end-of-header-and-body op)
+                                (extractor))])
+                  (let ([d (wrapper-procedure-data ($fasl-write-gensym-hook))])
+                    (if (and (procedure? d)
+                             (bitwise-bit-set (procedure-arity-mask d) 0))
+                        (d)
+                        (display "!!! non-thunk ($fasl-write-gensym-hook) wrapper data !!!\n"
+                                 (current-error-port)))
+                    (for-each (lambda (bv)
+                                (put-bytevector op bv))
+                              bv*)))]))))))))
 
 (define (new-extension new-ext fn)
   (let ([old-ext (path-extension fn)])
@@ -1104,7 +1110,7 @@
                       (let ([libs-in-file '()])
                         (let loop! ()
                           (let ([x (fasl-read ip)])
-                            (if (eof-object? x) #;#30rFOOT ;TODO!!
+                            (if (eof-object? x)
                                 (begin
                                   (for-each
                                     (lambda (node)

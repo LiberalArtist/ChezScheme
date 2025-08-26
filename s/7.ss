@@ -270,9 +270,7 @@
           (unless (eof-object? x)
             (let loop ([x x])
               (let ([next-x (fasl-read ip situation externals)])
-                (if (or (eof-object? next-x)
-                        ;; inserted by compile-file-help2 before footer metadata: see also S_boot_read in fasl.c
-                        (eq? next-x #30rFOOT))
+                (if (eof-object? next-x)
                     (load-binary x)
                     (begin (load-binary x) (loop next-x))))))))))
 

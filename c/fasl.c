@@ -167,9 +167,6 @@
  *         least-significant first
  *
  * Notes:
- *  * the above grammar is for fasl in general: compile-file and friends
- *    use fasl in a particular shape, which is defined by compile.ss.
- *
  *  * a list of length n will appear to be shorter in the fasl
  *    representation when the tail of the list is shared, since the
  *    shared tail will be a {graph-def} or {graph-ref}.
@@ -364,15 +361,10 @@ ptr S_bv_fasl_read(ptr bv, int ty, uptr offset, uptr len, ptr path, ptr external
 
 ptr S_boot_read(faslFile f, const char *path) {
   ptr tc = get_thread_context();
-  ptr entry;
 
   f->uf.path = Sstring_utf8(path, -1);
-  entry = fasl_entry(tc, fasl_type_visit_revisit, f, S_G.null_vector);
 
-  /* #30rFOOT inserted by compile-file-help2 before footer metadata: see also do-load-binary in 7.ss */
-  return ((Sfixnum(427349) == entry)
-          ? Seof_object
-          : entry);
+  return fasl_entry(tc, fasl_type_visit_revisit, f, S_G.null_vector);
 }
 
 char *S_format_scheme_version(uptr n) {
