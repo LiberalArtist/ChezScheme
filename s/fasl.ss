@@ -16,7 +16,20 @@
 ;; The fasl reader is "fasl.c", which includes an overview of the fasl
 ;; format.
 
-(define-who $fasl-write-gensym-hook ($make-thread-parameter (lambda (x) x)))
+(define-who $fasl-write-gensym-hook
+  ($make-thread-parameter
+   (rec fasl-write-gensym-hook/default
+        (lambda (x) x))
+   (rec fasl-write-gensym-hook/guard
+        (lambda (hook)
+          (safe-assert
+           (and (procedure? hook)
+                (bitwise-bit-set? (procedure-arity-mask hook) 1)))
+          (lambda (gs)
+            (safe-assert (gensym? gs))
+            (let ([ret (hook gs)])
+              (safe-assert (gensym? ret))
+              ret))))))
 
 (let ()
 (define-record-type target

@@ -887,8 +887,9 @@
                           ;; inserting #t after lpinfo as an end-of-header marker
                           (append (list (list `(object #t)))
                                   final**
-                                  (if (wrapper-procedure? $fasl-write-gensym-hook)
-                                      (list (list `(object #30rFOOT)))
+                                  (if (wrapper-procedure? ($fasl-write-gensym-hook))
+                                      (begin (display "!!! #30rFOOT !!!\n" (current-error-port))
+                                             (list (list `(object ,#30rFOOT))))
                                       '())))))))))))
 
 (define (new-extension new-ext fn)

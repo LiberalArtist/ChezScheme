@@ -1,0 +1,5 @@
+(library (demo)
+  (export demo)
+  (import (rnrs))
+  (define-record-type demo)
+)
