@@ -1091,7 +1091,7 @@
                       (let ([libs-in-file '()])
                         (let loop! ()
                           (let ([x (fasl-read ip)])
-                            (if (eof-object? x) 
+                            (if (eof-object? x) #;#30rFOOT ;TODO!!
                                 (begin
                                   (for-each
                                     (lambda (node)

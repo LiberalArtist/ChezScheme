@@ -25,11 +25,15 @@
           (safe-assert
            (and (procedure? hook)
                 (bitwise-bit-set? (procedure-arity-mask hook) 1)))
-          (lambda (gs)
+          ((if (wrapper-procedure? hook)
+               (lambda (f)
+                 (make-wrapper-procedure f (procedure-arity-mask f) (wrapper-procedure-data hook)))
+               values)
+           (lambda (gs)
             (safe-assert (gensym? gs))
             (let ([ret (hook gs)])
               (safe-assert (gensym? ret))
-              ret))))))
+              ret)))))))
 
 (let ()
 (define-record-type target
