@@ -887,7 +887,9 @@
                           ;; inserting #t after lpinfo as an end-of-header marker
                           (append (list (list `(object #t)))
                                   final**
-                                  (list (list `(object #30rFOOT)))))))))))))
+                                  (if (wrapper-procedure? $fasl-write-gensym-hook)
+                                      (list (list `(object #30rFOOT)))
+                                      '())))))))))))
 
 (define (new-extension new-ext fn)
   (let ([old-ext (path-extension fn)])
@@ -1990,6 +1992,11 @@
                       ip*)
                     ;; inserting #t after lpinfo as an end-of-header marker
                     (c-print-fasl `(object #t) op (constant fasl-type-visit-revisit) #f #f)
+
+                    ;; FIXME: support footer
+
+
+
                     (let* ([bufsiz (file-buffer-size)] [buf (make-bytevector bufsiz)])
                       (for-each (lambda (ip)
                                   (let loop ()
